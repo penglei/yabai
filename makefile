@@ -1,6 +1,6 @@
 FRAMEWORK_PATH = -F/System/Library/PrivateFrameworks
 FRAMEWORK      = -framework Carbon -framework Cocoa -framework CoreServices -framework SkyLight
-BUILD_FLAGS    = -std=c99 -Wall -g -O0 -fvisibility=hidden -mmacosx-version-min=11.0 -fno-objc-arc -arch x86_64 -arch arm64
+BUILD_FLAGS    = -std=c99 -Wall -g -O0 -fvisibility=hidden -mmacosx-version-min=11.0 -fno-objc-arc -arch arm64
 BUILD_PATH     = ./bin
 DOC_PATH       = ./doc
 SCRIPT_PATH    = ./scripts
@@ -16,18 +16,18 @@ BINS           = $(BUILD_PATH)/yabai
 
 all: clean-build $(BINS)
 
-asan: BUILD_FLAGS=-std=c99 -Wall -g -O0 -fvisibility=hidden -fsanitize=address,undefined -mmacosx-version-min=11.0 -fno-objc-arc -arch x86_64 -arch arm64
+asan: BUILD_FLAGS=-std=c99 -Wall -g -O0 -fvisibility=hidden -fsanitize=address,undefined -mmacosx-version-min=11.0 -fno-objc-arc -arch arm64
 asan: clean-build $(BINS)
 
-tsan: BUILD_FLAGS=-std=c99 -Wall -g -O0 -fvisibility=hidden -fsanitize=thread,undefined -mmacosx-version-min=11.0 -fno-objc-arc -arch x86_64 -arch arm64
+tsan: BUILD_FLAGS=-std=c99 -Wall -g -O0 -fvisibility=hidden -fsanitize=thread,undefined -mmacosx-version-min=11.0 -fno-objc-arc -arch arm64
 tsan: clean-build $(BINS)
 
-install: BUILD_FLAGS=-std=c99 -Wall -DNDEBUG -O2 -fvisibility=hidden -mmacosx-version-min=11.0 -fno-objc-arc -arch x86_64 -arch arm64
+install: BUILD_FLAGS=-std=c99 -Wall -DNDEBUG -O2 -fvisibility=hidden -mmacosx-version-min=11.0 -fno-objc-arc -arch arm64
 install: clean-build $(BINS)
 
 $(OSAX_SRC): $(OSAX_PATH)/loader.m $(OSAX_PATH)/payload.m
-	xcrun clang $(OSAX_PATH)/payload.m -shared -fPIC -O2 -mmacosx-version-min=11.0 -arch x86_64 -arch arm64e -o $(OSAX_PATH)/payload $(FRAMEWORK_PATH) -framework SkyLight -framework Foundation -framework Carbon
-	xcrun clang $(OSAX_PATH)/loader.m -O2 -mmacosx-version-min=11.0 -arch x86_64 -arch arm64e -o $(OSAX_PATH)/loader -framework Cocoa
+	xcrun clang $(OSAX_PATH)/payload.m -shared -fPIC -O2 -mmacosx-version-min=11.0 -arch arm64e -o $(OSAX_PATH)/payload $(FRAMEWORK_PATH) -framework SkyLight -framework Foundation -framework Carbon
+	xcrun clang $(OSAX_PATH)/loader.m -O2 -mmacosx-version-min=11.0 -arch arm64e -o $(OSAX_PATH)/loader -framework Cocoa
 	xxd -i -a $(OSAX_PATH)/payload $(OSAX_PATH)/payload_bin.c
 	xxd -i -a $(OSAX_PATH)/loader $(OSAX_PATH)/loader_bin.c
 	rm -f $(OSAX_PATH)/payload
@@ -39,7 +39,7 @@ man:
 icon:
 	python3 $(SCRIPT_PATH)/seticon.py $(ASSET_PATH)/icon/2x/icon-512px@2x.png $(BUILD_PATH)/yabai
 
-archive: man install sign icon
+archive: install
 	rm -rf $(ARCH_PATH)
 	mkdir -p $(ARCH_PATH)
 	cp -r $(BUILD_PATH) $(ARCH_PATH)/
